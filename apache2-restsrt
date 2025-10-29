@@ -1,0 +1,44 @@
+- name: Install and configure Apache2
+  hosts: all
+  become: yes
+
+  vars:
+    apache_conf_src: files/apache2.conf  # Place your custom config in 'files/' directory
+    apache_conf_dest: /etc/apache2/apache2.conf
+
+  tasks:
+    - name: Ensure Apache2 is installed
+      apt:
+        name: apache2
+        state: present
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Backup original apache2.conf
+      copy:
+        src: "{{ apache_conf_dest }}"
+        dest: "{{ apache_conf_dest }}.bak"
+        remote_src: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Deploy custom Apache2 config
+      copy:
+        src: "{{ apache_conf_src }}"
+        dest: "{{ apache_conf_dest }}"
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Validate and restart Apache2
+      when: ansible_os_family == "Debian"
+
+    - name: Validate Apache2 config
+      command: apachectl configtest
+      register: apache_configtest
+      changed_when: false
+      failed_when: apache_configtest.rc != 0
+
+  handlers:
+    - name: Validate and restart Apache2
+      service:
+        name: apache2
+        state: restarted

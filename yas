@@ -1,0 +1,20 @@
+- name: wnd progra
+  hosts: all
+  remote_user: yas
+  become: yes
+  tasks:
+    - name: Create a file at /home/yas/testfile2
+      ansible.builtin.file:
+        path: /home/yas/testfile2
+        state: touch
+        mode: '0644'
+    - name: Create a file at /home/yas/mydir
+      ansible.builtin.file:
+        path: /home/yas/mydir
+        state: directory
+        mode: '0755'
+    - name: home/yas/yyy
+      ansible.builtin.file:
+        path: /home/yas/yyy
+        state: directory
+        mode: '0755'

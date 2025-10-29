@@ -1,0 +1,24 @@
+- name: Install and configure Apache2
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install Apache2
+      apt:
+        name: apache2
+        state: present
+      notify: Restart Apache2
+      when: ansible_os_family == "Debian"
+
+    - name: Copy custom config
+      copy:
+        src: apache2.conf
+        dest: /etc/apache2/apache2.conf
+      notify: Restart Apache2
+      when: ansible_os_family == "Debian"
+
+  handlers:
+    - name: Restart Apache2
+      service:
+        name: apache2
+        state: restarted

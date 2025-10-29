@@ -1,0 +1,26 @@
+- name: Install Apache2
+  apt:
+    name: apache2
+    state: present
+    update_cache: yes
+
+- name: Backup original apache2.conf
+  copy:
+    src: /etc/apache2/apache2.conf
+    dest: /etc/apache2/apache2.conf.bak
+    remote_src: yes
+
+- name: Deploy custom apache2.conf
+  copy:
+    src: apache2.conf
+    dest: /etc/apache2/apache2.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart Apache2
+
+- name: Validate Apache2 config
+  command: apachectl configtest
+  register: apache_configtest
+  changed_when: false
+  failed_when: apache_configtest.rc != 0

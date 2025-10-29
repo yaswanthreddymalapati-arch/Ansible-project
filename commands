@@ -1,0 +1,17 @@
+- name: wnd progra
+  hosts: all
+  remote_user: yas
+  become: yes
+
+  tasks:
+    - name: Create a file
+      ansible.builtin.command: touch testfile
+
+    - name: List of all files
+      ansible.builtin.shell: ls > /tmp/abc
+
+    - name: Create directory
+      ansible.builtin.raw: mkdir /home/yas/testdir2
+
+    - name: Execute a script
+      ansible.builtin.script: ./more.sh

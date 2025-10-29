@@ -1,0 +1,21 @@
+- name: Delete multiple items
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Remove files and folders
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /tmp/file1.txt
+        - /tmp/old_folder
+        - /home/yas/files
+        - /home/yas/mydir
+        - /home/yas/testdir2
+        - /home/yas/testfile
+        - /home/yas/testfile1
+        - /home/yas/testfile2
+        - /home/yas/testfile3
+        - /home/yas/yyy
+

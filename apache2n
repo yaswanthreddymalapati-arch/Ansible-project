@@ -1,0 +1,35 @@
+- name: Install and start Apache2
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install Apache2 (Debian/Ubuntu)
+      apt:
+        name: apache2
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Install Apache (RHEL/CentOS)
+      yum:
+        name: httpd
+        state: present
+      when: ansible_os_family == "RedHat"
+    - name: Validate Apache config (Debian)
+      command: apache2ctl configtest
+      register: apache_config
+      changed_when: false
+      failed_when: "'Syntax OK' not in apache_config.stdout"
+      when: ansible_os_family == "Debian"
+    - name: Start and enable Apache2 (Debian/Ubuntu)
+      service:
+        name: apache2
+        state: started
+        enabled: true
+      when: ansible_os_family == "Debian"
+
+    - name: Start and enable Apache (RHEL/CentOS)
+      service:
+        name: httpd
+        state: started
+        enabled: true
+      when: ansible_os_family == "RedHat"

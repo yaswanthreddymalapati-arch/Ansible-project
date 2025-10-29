@@ -1,0 +1,16 @@
+- name: Remove unwanted packages
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Remove Apache2 (Debian/Ubuntu)
+      apt:
+        name: apache2
+        state: absent
+      when: ansible_os_family == "Debian"
+
+    - name: Remove httpd (RHEL/CentOS)
+      yum:
+        name: httpd
+        state: absent
+      when: ansible_os_family == "RedHat"

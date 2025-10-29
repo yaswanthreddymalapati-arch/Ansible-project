@@ -1,0 +1,6 @@
+- name: Setup Kubernetes Worker
+  hosts: kube_worker
+  become: yes
+  roles:
+    - common
+    - worker
